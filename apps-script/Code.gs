@@ -18,7 +18,7 @@ const SETTINGS = Object.freeze({
 function doGet() {
   const page = HtmlService.createTemplateFromFile('Upload');
   page.eventName = SETTINGS.EVENT_NAME;
-  page.maxMb = SETTINGS.MAX_FILE_BYTES / (1024 * 1024);
+  page.maxMB = SETTINGS.MAX_FILE_BYTES / (1024 * 1024);
   return page.evaluate()
     .setTitle('Share Your Wedding Photos')
     // Allow embedding the uploader in the GitHub Pages website.
