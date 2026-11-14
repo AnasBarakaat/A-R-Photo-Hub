@@ -4,42 +4,42 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    :root { color-scheme: light; --wine:#874957; --ink:#352b29; --muted:#796c66; --border:#e8dcd1; }
+    :root { color-scheme: light; --olive:#515a3c; --ink:#403c2d; --muted:#77745f; --border:#d9c9aa; --paper:#fbf5e8; --sage:#e7e7d0; --success-bg:#e8ead7; --success-ink:#515a3c; --error-bg:#e9e3d3; --error-ink:#68563a; }
     * { box-sizing: border-box; }
-    html, body { margin:0; background: transparent; font-family: Arial, Helvetica, sans-serif; color:var(--ink); }
-    .uploader { border:1px solid var(--border); border-radius:18px; padding:25px 24px 21px; background:#fffdf9; box-shadow:0 10px 35px #7a514311; min-height:515px; }
+    html, body { margin:0; background: transparent; font-family:Arial, Helvetica, sans-serif; color:var(--ink); }
+    .uploader { border:1px solid var(--border); border-radius:18px; padding:25px 24px 21px; background:var(--paper); box-shadow:0 10px 35px #342f2118; min-height:515px; }
     .label { display:block; font-weight:700; font-size:12px; margin: 0 0 9px; }
-    .name-input { appearance:none; width:100%; border:1px solid var(--border); outline:0; background:#fff; border-radius:9px; padding:13px; font-size:14px; color:var(--ink); }
-    .name-input:focus { border-color:var(--wine); box-shadow:0 0 0 3px #87495719; }
+    .name-input { appearance:none; width:100%; border:1px solid var(--border); outline:0; background:var(--paper); border-radius:9px; padding:13px; font:inherit; font-size:14px; color:var(--ink); }
+    .name-input:focus { border-color:var(--olive); box-shadow:0 0 0 3px #515a3c24; }
     .input-hint { font-size:11px; color:var(--muted); margin:7px 0 25px; line-height:1.6; }
-    .dropzone { border:1px dashed #cbb6b6; background:#fcf7f4; border-radius:14px; padding:25px 10px; text-align:center; }
+    .dropzone { border:1px dashed #b4b395; background:var(--sage); border-radius:14px; padding:25px 10px; text-align:center; }
     .big-icon { font-size:35px; margin-bottom:8px; }
     .dropzone strong { display:block; font-size:15px; margin-bottom:7px; }
     .dropzone p { font-size:11px; margin:0 0 18px; color:var(--muted); }
     .action-row { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
-    button { font:inherit; cursor:pointer; border-radius:10px; border:1px solid #c8aeac; padding:12px 15px; font-size:12px; font-weight:bold; }
+    button { font:inherit; cursor:pointer; border-radius:10px; border:1px solid #b4b395; padding:12px 15px; font-size:12px; font-weight:bold; }
     button:disabled { opacity:.5; cursor:not-allowed; }
-    .primary { background:var(--wine); color:white; border-color:var(--wine); }
-    .secondary { background:white; color:var(--wine); }
+    .primary { background:var(--olive); color:white; border-color:var(--olive); }
+    .secondary { background:var(--paper); color:var(--olive); border-color:#b4b395; }
     input[type=file] { display:none; }
     .disclaimer { text-align:center; margin:13px 0 10px; font-size:10px; color:var(--muted); line-height:1.55; }
     .queue-header { display:flex; justify-content:space-between; margin-top:18px; font-size:12px; font-weight:bold; }
-    .clear { border:0; background:none; padding:0; color:var(--wine); }
+    .clear { border:0; background:none; padding:0; color:var(--olive); }
     .queue { display:grid; gap:7px; margin:10px 0 15px; max-height:185px; overflow:auto; }
-    .queue-item { border:1px solid var(--border); border-radius:10px; padding:9px 10px; display:flex; gap:9px; align-items:center; background:white; }
-    .thumb { width:37px; height:37px; border-radius:5px; background:#f3e9e4; flex:none; object-fit:cover; display:grid; place-items:center; }
+    .queue-item { border:1px solid var(--border); border-radius:10px; padding:9px 10px; display:flex; gap:9px; align-items:center; background:var(--paper); }
+    .thumb { width:37px; height:37px; border-radius:5px; background:#e7e2ce; flex:none; object-fit:cover; display:grid; place-items:center; }
     .file-meta { flex:1; min-width:0; font-size:11px; }
     .file-name { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:bold; }
     .file-status { display:block; font-size:10px; color:var(--muted); margin-top:4px; }
-    .file-status.good { color:#23714d; }
-    .file-status.bad { color:#ad3448; }
-    .remove { border:0; background:none; color:var(--wine); padding:4px; font-size:20px; font-weight:normal; }
+    .file-status.good { color:var(--success-ink); }
+    .file-status.bad { color:var(--error-ink); }
+    .remove { border:0; background:none; color:var(--olive); padding:4px; font-size:20px; font-weight:normal; }
     .upload-all { width:100%; padding:15px; font-size:13px; margin-top:5px; }
-    .banner { border-radius:9px; padding:12px; line-height:1.5; font-size:12px; margin:14px 0 0; background:#f7f2ec; color:var(--muted); }
-    .banner.success { background:#eaf5ed; color:#23714d; }
-    .banner.error { background:#fff0f0; color:#9d3044; }
-    .progress { height:5px; background:#f1e7e1; border-radius:999px; margin:10px 0 0; overflow:hidden; }
-    .progress-fill { height:100%; background:var(--wine); width:0%; transition:width .25s; }
+    .banner { border-radius:9px; padding:12px; line-height:1.5; font-size:12px; margin:14px 0 0; background:var(--sage); color:var(--muted); }
+    .banner.success { background:var(--success-bg); color:var(--success-ink); }
+    .banner.error { background:var(--error-bg); color:var(--error-ink); }
+    .progress { height:5px; background:#e8e7dc; border-radius:999px; margin:10px 0 0; overflow:hidden; }
+    .progress-fill { height:100%; background:var(--olive); width:0%; transition:width .25s; }
     .progress[hidden], .queue-header[hidden], .queue[hidden], .upload-all[hidden], .banner[hidden] { display:none; }
     @media(max-width:420px) { .uploader{padding:18px 15px 17px; min-height:520px} .dropzone{padding:21px 8px} .action-row button{flex:1; padding:13px 6px} }
   </style>
@@ -48,7 +48,7 @@
   <div class="uploader">
     <div id="statusBanner" class="banner" role="status" aria-live="polite" hidden></div>
     <section id="uploadInterface">
-      <label for="guestName" class="label">Your name <span style="font-weight:normal;color:#978a83;">(optional)</span></label>
+      <label for="guestName" class="label">Your name <span style="font-weight:normal;color:var(--muted);">(optional)</span></label>
       <input id="guestName" class="name-input" type="text" autocomplete="name" maxlength="40" placeholder="e.g. Ali & Fatima">
       <p class="input-hint">We'll add your name to the filenames so we know who captured each moment.</p>
       <div class="dropzone">

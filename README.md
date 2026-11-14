@@ -4,7 +4,7 @@ A mobile-friendly, one-day wedding photo upload site. Visitors can take a photo 
 
 ## How it works
 
-- GitHub Pages hosts `index.html`, `styles.css`, `config.js`, `site.js`.
+- GitHub Pages hosts the photo-sharing page and its local design assets (`index.html`, `styles.css`, `config.js`, `site.js`, `favicon.ico`, and `fonts/`).
 - A Google Apps Script Web App hosts the uploader widget in an iframe and writes each uploaded photo to your Drive folder.
 - The Apps Script runs under your Google account. **Do not embed your OAuth tokens, client secrets, or Google account credentials in GitHub files.**
 - Date-window validation happens **on the server**. Uploads stop at the configured time even if the GitHub page remains available.
@@ -47,7 +47,7 @@ The `/exec` URL is intentionally public: guests must be able to access the uploa
 ## Step 4: Publish GitHub Pages
 
 1. Create a new GitHub repository named e.g. `wedding-photos`.
-2. Upload `index.html`, `styles.css`, `site.js`, `config.js`, `.nojekyll` to the repository root. You may also include this README and the `apps-script` sources (but never any credentials or tokens).
+2. Upload `index.html`, `styles.css`, `site.js`, `config.js`, `favicon.ico`, the `fonts/` folder, and `.nojekyll` to the repository root. You may also include this README and the `apps-script` sources (but never any credentials or tokens).
 3. Under the repository **Settings > Pages**, choose **Deploy from a branch**, branch **main**, folder **/(root)**, then save.
 4. Your public URL should look like `https://YOUR_USERNAME.github.io/wedding-photos/`.
 5. Create a QR code containing the **GitHub Pages URL** (not the Apps Script URL); print it on table signs.
