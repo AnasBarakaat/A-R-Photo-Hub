@@ -42,7 +42,17 @@ body {
   pointer-events: none;
   opacity: .3;
 }
-.corner-ornament-top { top: 18px; right: -22px; transform: rotate(20deg); }
+.corner-ornament-top {
+  top: 8px;
+  right: 8px;
+  width: 68px;
+  height: 68px;
+  object-fit: cover;
+  opacity: .45;
+  mix-blend-mode: darken;
+  -webkit-mask-image: radial-gradient(ellipse 20% 25% at center, #000 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 20% 25% at center, #000 55%, transparent 100%);
+}
 .corner-ornament-bottom { bottom: -34px; left: -22px; transform: rotate(20deg); }
 .site-head { padding: 24px 28px 18px; display: flex; flex-direction: column; align-items: center; gap: 10px; background: var(--butterfly); }
 .eyebrow { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .22em; color: var(--muted); }

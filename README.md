@@ -4,7 +4,7 @@ A mobile-friendly, one-day wedding photo upload site. Visitors can take a photo 
 
 ## How it works
 
-- GitHub Pages hosts the photo-sharing page and its local design assets (`index.html`, `styles.css`, `config.js`, `site.js`, `favicon.ico`, and `fonts/`).
+- GitHub Pages hosts the photo-sharing page and its local design assets (`index.html`, `styles.css`, `config.js`, `site.js`, `favicon.ico`, `monogram.png`, and `fonts/`).
 - A Google Apps Script Web App hosts the uploader widget in an iframe and writes each uploaded photo to your Drive folder.
 - The Apps Script runs under your Google account. **Do not embed your OAuth tokens, client secrets, or Google account credentials in GitHub files.**
 - Date-window validation happens **on the server**. Uploads stop at the configured time even if the GitHub page remains available.
@@ -47,7 +47,7 @@ The `/exec` URL is intentionally public: guests must be able to access the uploa
 ## Step 4: Publish GitHub Pages
 
 1. Create a new GitHub repository named e.g. `wedding-photos`.
-2. Upload `index.html`, `styles.css`, `site.js`, `config.js`, `favicon.ico`, the `fonts/` folder, and `.nojekyll` to the repository root. You may also include this README and the `apps-script` sources (but never any credentials or tokens).
+2. Upload `index.html`, `styles.css`, `site.js`, `config.js`, `favicon.ico`, `monogram.png`, the `fonts/` folder, and `.nojekyll` to the repository root. You may also include this README and the `apps-script` sources (but never any credentials or tokens).
 3. Under the repository **Settings > Pages**, choose **Deploy from a branch**, branch **main**, folder **/(root)**, then save.
 4. Your public URL should look like `https://YOUR_USERNAME.github.io/wedding-photos/`.
 5. Create a QR code containing the **GitHub Pages URL** (not the Apps Script URL); print it on table signs.
@@ -55,9 +55,9 @@ The `/exec` URL is intentionally public: guests must be able to access the uploa
 ## Step 5: Test BEFORE the wedding
 
 - Use an iPhone (Safari) and Android (Chrome) on mobile data, not just your home Wi-Fi.
-- Test **Take photo** and **Choose photos**.
+- Test the **Take photo** control on iPhone (Safari) and Android (Chrome). There is no separate photo-library option; browser and device behavior may still show a chooser when opening the camera control.
 - Verify an uploaded file appears in your private Drive folder and the filename contains the guest name.
-- Test multiple uploads, HEIC iPhone photos, file-size errors, and weak mobile connections.
+- Test multiple camera captures, HEIC iPhone photos, file-size errors, and weak mobile connections.
 - Open the QR target in an **incognito/private** window to ensure no Google sign-in is required.
 - If a mobile browser blocks the embedded uploader, use the **open it directly** fallback link shown below the widget.
 - To test before the configured event date, temporarily set `OPENS_AT` to a time in the past and `CLOSES_AT` to a time in the future, then redeploy a new Apps Script version. Restore the wedding window before printing the QR cards.
@@ -72,7 +72,7 @@ The `/exec` URL is intentionally public: guests must be able to access the uploa
 
 ## Limits and safety
 
-- **12 MiB max per photo**, 30 selected at a time (can select another batch afterward). These are intentionally conservative default limits for Google Apps Script. They are not universal Apps Script hard limits.
+- **12 MiB max per photo**, 30 photos per batch (take another batch afterward). These are intentionally conservative default limits for Google Apps Script. They are not universal Apps Script hard limits.
 - Image originals are preserved, including HEIC files; nothing is downscaled.
 - Videos and very large ProRAW images are **not supported** by this starter; use a streaming backend for those cases.
 - Apps Script has quotas and can be throttled, especially when many guests upload simultaneously. For large weddings or critical uploads, use a production backend (e.g. Cloud Run/Cloudflare Worker) and load-test it.

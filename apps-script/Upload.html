@@ -20,7 +20,6 @@
     button { font:inherit; cursor:pointer; border-radius:10px; border:1px solid #b4b395; padding:12px 15px; font-size:12px; font-weight:bold; }
     button:disabled { opacity:.5; cursor:not-allowed; }
     .primary { background:var(--olive); color:white; border-color:var(--olive); }
-    .secondary { background:var(--paper); color:var(--olive); border-color:#b4b395; }
     input[type=file] { display:none; }
     .disclaimer { text-align:center; margin:13px 0 10px; font-size:10px; color:var(--muted); line-height:1.55; }
     .queue-header { display:flex; justify-content:space-between; margin-top:18px; font-size:12px; font-weight:bold; }
@@ -54,13 +53,11 @@
       <div class="dropzone">
         <div class="big-icon" aria-hidden="true">♡</div>
         <strong>Have a moment to share?</strong>
-        <p>Capture a new photo or pick your favorites.</p>
+        <p>Take a photo to add it to your upload.</p>
         <div class="action-row">
           <button id="cameraBtn" type="button" class="primary">📷 &nbsp; Take photo</button>
-          <button id="galleryBtn" type="button" class="secondary">▧ &nbsp; Choose photos</button>
         </div>
         <input id="cameraInput" type="file" accept="image/*" capture="environment">
-        <input id="galleryInput" type="file" accept="image/*" multiple>
       </div>
       <div id="queueHeader" class="queue-header" hidden><span id="queueTitle">Selected photos</span><button class="clear" id="clearBtn" type="button">Clear</button></div>
       <div id="queue" class="queue" aria-live="polite" hidden></div>
@@ -79,7 +76,7 @@
     var banner = document.getElementById('statusBanner');
     var queue = document.getElementById('queue');
     var uploadBtn = document.getElementById('uploadBtn');
-    var buttons = ['cameraBtn','galleryBtn','clearBtn'];
+    var buttons = ['cameraBtn','clearBtn'];
 
     function showBanner(message, kind) {
       banner.textContent = message;
@@ -102,7 +99,7 @@
         if (!isImage(file)) { errors.push(file.name + ' is not an image.'); continue; }
         if (file.size > MAX_SIZE) { errors.push(file.name + ' is over the 12 MB limit.'); continue; }
         if (file.size <= 0) { errors.push(file.name + ' is empty.'); continue; }
-        if (files.length >= MAX_BATCH) { errors.push('You can select up to 30 photos at a time.'); break; }
+        if (files.length >= MAX_BATCH) { errors.push('You can add up to 30 photos at a time.'); break; }
         files.push({ file:file, state:'ready', error:'' });
       }
       if (errors.length) showBanner(errors.slice(0,3).join(' '), 'error');
@@ -195,9 +192,7 @@
     }
 
     document.getElementById('cameraBtn').addEventListener('click', function(){document.getElementById('cameraInput').click();});
-    document.getElementById('galleryBtn').addEventListener('click', function(){document.getElementById('galleryInput').click();});
     document.getElementById('cameraInput').addEventListener('change', function(){addSelected(this);});
-    document.getElementById('galleryInput').addEventListener('change', function(){addSelected(this);});
     document.getElementById('clearBtn').addEventListener('click', function(){if (!uploading) { files = files.filter(function(x){return x.state === 'done';}); render(); clearBanner(); }});
     uploadBtn.addEventListener('click', uploadAll);
 
