@@ -1,0 +1,84 @@
+:root {
+  --ink: #352b29;
+  --muted: #776b67;
+  --wine: #874957;
+  --paper: #f8f4ed;
+  --cream: #fffcf7;
+  --border: #ded5ca;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: #eee6dc;
+  color: var(--ink);
+  font-family: "DM Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.page-shell {
+  position: relative;
+  max-width: 780px;
+  min-height: 100vh;
+  margin: auto;
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow: 0 25px 90px #4c333316;
+}
+.corner-ornament {
+  position: absolute;
+  color: #b7a99e;
+  font-size: 110px;
+  line-height: 1;
+  pointer-events: none;
+  opacity: .3;
+}
+.corner-ornament-top { top: 18px; right: -22px; transform: rotate(20deg); }
+.corner-ornament-bottom { bottom: -34px; left: -22px; transform: rotate(20deg); }
+.site-head { padding: 27px 28px 0; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.monogram { font-size: 27px; color: var(--wine); }
+.eyebrow { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .22em; color: var(--muted); }
+.eyebrow-accent { color: var(--wine); }
+.hero { padding: 50px 48px 49px; text-align: center; }
+.tiny-ornament { color: var(--wine); font-size: 12px; letter-spacing: .4em; margin-bottom: 32px; }
+h1, h2, .footer-heading { font-family: "Playfair Display", Georgia, serif; font-weight: 400; }
+h1 { font-size: clamp(35px, 6vw, 60px); line-height: 1.19; margin: 19px 0 23px; letter-spacing: -.035em; }
+h1 em { color: var(--wine); font-weight: 400; }
+.hero-body { max-width: 440px; margin: 0 auto; font-size: 14px; line-height: 1.85; color: var(--muted); }
+.hero-rule { position: relative; margin: 43px auto 31px; max-width: 310px; color: var(--wine); }
+.hero-rule::before, .hero-rule::after { content: ""; display: inline-block; width: 41%; border-top: 1px solid var(--border); vertical-align: middle; }
+.hero-rule span { display: inline-block; padding: 0 14px; vertical-align: middle; font-size: 14px; }
+.instruction-row { display: flex; justify-content: center; align-items: center; gap: 12px; }
+.instruction { display: flex; flex-direction: column; align-items: center; gap: 10px; min-width: 95px; text-align: center; color: var(--muted); font-size: 11px; line-height: 1.55; }
+.instruction-icon { border-radius: 50%; border: 1px solid #cebfb2; height: 34px; width: 34px; display: grid; place-items: center; color: var(--wine); font-family: "Playfair Display", serif; font-size: 13px; }
+.instruction-arrow { align-self: center; margin-top: -19px; color: #b7a99e; }
+.upload-section { background: var(--cream); padding: 52px 20px 25px; border-top: 1px solid #eee3db; border-bottom: 1px solid #eee3db; }
+.upload-heading { text-align: center; }
+h2 { font-size: clamp(31px, 5vw, 42px); margin: 12px 0 7px; }
+.upload-heading p { font-size: 13px; color: var(--muted); margin: 0 0 20px; }
+.upload-container { max-width: 585px; margin: 0 auto; }
+#uploadFrame { display: block; border: 0; height: 730px; width: 100%; background: transparent; }
+#uploadFrame[hidden] { display: none; }
+.setup-note { margin: 24px auto 40px; text-align: center; border: 1px solid #e7d8ca; padding: 22px; border-radius: 14px; background: #fff9f1; font-size: 13px; line-height: 1.6; }
+.setup-note[hidden] { display: none; }
+.setup-note code { display: inline; background: #f3e9dd; padding: 2px 5px; }
+.iframe-hint { max-width: 480px; margin: -10px auto 22px; text-align: center; font-size: 11px; line-height: 1.6; color: var(--muted); }
+.iframe-hint[hidden] { display: none; }
+a { color: var(--wine); font-weight: 700; }
+.footer { text-align: center; padding: 43px 24px 38px; }
+.footer-heart { color: var(--wine); font-size: 19px; margin: 0 0 9px; }
+.footer-heading { font-size: 27px; margin: 0 0 9px; }
+.footer-caption { margin: 0; font-size: 12px; color: var(--muted); }
+.privacy-copy { font-size: 10px; color: #9a8e88; line-height: 1.7; max-width: 330px; margin: 24px auto 26px; }
+.footer-mark { font-size: 9px; font-weight: 700; color: #ae9e95; letter-spacing: .2em; margin: 0; }
+@media (max-width: 510px) {
+  .site-head { padding-top: 23px; }
+  .hero { padding: 37px 22px 43px; }
+  .tiny-ornament { margin-bottom: 24px; }
+  h1 { font-size: clamp(30px, 8.2vw, 44px); }
+  .hero-body { font-size: 12px; }
+  .instruction-row { gap: 5px; }
+  .instruction { min-width: 85px; font-size: 10px; }
+  .instruction-arrow { font-size: 13px; }
+  .upload-section { padding: 42px 9px 20px; }
+  #uploadFrame { height: 780px; }
+}

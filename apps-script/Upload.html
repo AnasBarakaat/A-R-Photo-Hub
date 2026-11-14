@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { color-scheme: light; --wine:#874957; --ink:#352b29; --muted:#796c66; --border:#e8dcd1; }
+    * { box-sizing: border-box; }
+    html, body { margin:0; background: transparent; font-family: Arial, Helvetica, sans-serif; color:var(--ink); }
+    .uploader { border:1px solid var(--border); border-radius:18px; padding:25px 24px 21px; background:#fffdf9; box-shadow:0 10px 35px #7a514311; min-height:515px; }
+    .label { display:block; font-weight:700; font-size:12px; margin: 0 0 9px; }
+    .name-input { appearance:none; width:100%; border:1px solid var(--border); outline:0; background:#fff; border-radius:9px; padding:13px; font-size:14px; color:var(--ink); }
+    .name-input:focus { border-color:var(--wine); box-shadow:0 0 0 3px #87495719; }
+    .input-hint { font-size:11px; color:var(--muted); margin:7px 0 25px; line-height:1.6; }
+    .dropzone { border:1px dashed #cbb6b6; background:#fcf7f4; border-radius:14px; padding:25px 10px; text-align:center; }
+    .big-icon { font-size:35px; margin-bottom:8px; }
+    .dropzone strong { display:block; font-size:15px; margin-bottom:7px; }
+    .dropzone p { font-size:11px; margin:0 0 18px; color:var(--muted); }
+    .action-row { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+    button { font:inherit; cursor:pointer; border-radius:10px; border:1px solid #c8aeac; padding:12px 15px; font-size:12px; font-weight:bold; }
+    button:disabled { opacity:.5; cursor:not-allowed; }
+    .primary { background:var(--wine); color:white; border-color:var(--wine); }
+    .secondary { background:white; color:var(--wine); }
+    input[type=file] { display:none; }
+    .disclaimer { text-align:center; margin:13px 0 10px; font-size:10px; color:var(--muted); line-height:1.55; }
+    .queue-header { display:flex; justify-content:space-between; margin-top:18px; font-size:12px; font-weight:bold; }
+    .clear { border:0; background:none; padding:0; color:var(--wine); }
+    .queue { display:grid; gap:7px; margin:10px 0 15px; max-height:185px; overflow:auto; }
+    .queue-item { border:1px solid var(--border); border-radius:10px; padding:9px 10px; display:flex; gap:9px; align-items:center; background:white; }
+    .thumb { width:37px; height:37px; border-radius:5px; background:#f3e9e4; flex:none; object-fit:cover; display:grid; place-items:center; }
+    .file-meta { flex:1; min-width:0; font-size:11px; }
+    .file-name { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:bold; }
+    .file-status { display:block; font-size:10px; color:var(--muted); margin-top:4px; }
+    .file-status.good { color:#23714d; }
+    .file-status.bad { color:#ad3448; }
+    .remove { border:0; background:none; color:var(--wine); padding:4px; font-size:20px; font-weight:normal; }
+    .upload-all { width:100%; padding:15px; font-size:13px; margin-top:5px; }
+    .banner { border-radius:9px; padding:12px; line-height:1.5; font-size:12px; margin:14px 0 0; background:#f7f2ec; color:var(--muted); }
+    .banner.success { background:#eaf5ed; color:#23714d; }
+    .banner.error { background:#fff0f0; color:#9d3044; }
+    .progress { height:5px; background:#f1e7e1; border-radius:999px; margin:10px 0 0; overflow:hidden; }
+    .progress-fill { height:100%; background:var(--wine); width:0%; transition:width .25s; }
+    .progress[hidden], .queue-header[hidden], .queue[hidden], .upload-all[hidden], .banner[hidden] { display:none; }
+    @media(max-width:420px) { .uploader{padding:18px 15px 17px; min-height:520px} .dropzone{padding:21px 8px} .action-row button{flex:1; padding:13px 6px} }
+  </style>
+</head>
+<body>
+  <div class="uploader">
+    <div id="statusBanner" class="banner" role="status" aria-live="polite" hidden></div>
+    <section id="uploadInterface">
+      <label for="guestName" class="label">Your name <span style="font-weight:normal;color:#978a83;">(optional)</span></label>
+      <input id="guestName" class="name-input" type="text" autocomplete="name" maxlength="40" placeholder="e.g. Ali & Fatima">
+      <p class="input-hint">We'll add your name to the filenames so we know who captured each moment.</p>
+      <div class="dropzone">
+        <div class="big-icon" aria-hidden="true">♡</div>
+        <strong>Have a moment to share?</strong>
+        <p>Capture a new photo or pick your favorites.</p>
+        <div class="action-row">
+          <button id="cameraBtn" type="button" class="primary">📷 &nbsp; Take photo</button>
+          <button id="galleryBtn" type="button" class="secondary">▧ &nbsp; Choose photos</button>
+        </div>
+        <input id="cameraInput" type="file" accept="image/*" capture="environment">
+        <input id="galleryInput" type="file" accept="image/*" multiple>
+      </div>
+      <p class="disclaimer">Up to <?= maxMb ?> MB per photo · Original quality · JPEG, PNG, HEIC, WebP and more</p>
+      <div id="queueHeader" class="queue-header" hidden><span id="queueTitle">Selected photos</span><button class="clear" id="clearBtn" type="button">Clear</button></div>
+      <div id="queue" class="queue" aria-live="polite" hidden></div>
+      <button id="uploadBtn" type="button" class="primary upload-all" hidden>Upload photos to our album ♡</button>
+      <div id="progress" class="progress" aria-hidden="true" hidden><div id="progressFill" class="progress-fill"></div></div>
+    </section>
+  </div>
+<script>
+  (function () {
+    'use strict';
+    var MAX_SIZE = <?= Math.floor(maxMb * 1024 * 1024) ?>;
+    var MAX_BATCH = 30;
+    var files = [];
+    var uploading = false;
+    var banner = document.getElementById('statusBanner');
+    var queue = document.getElementById('queue');
+    var uploadBtn = document.getElementById('uploadBtn');
+    var buttons = ['cameraBtn','galleryBtn','clearBtn'];
+
+    function showBanner(message, kind) {
+      banner.textContent = message;
+      banner.className = 'banner ' + (kind || '');
+      banner.hidden = false;
+    }
+    function clearBanner() { banner.hidden = true; }
+    function sizeString(size) { return (size / (1024 * 1024)).toFixed(1) + ' MB'; }
+    function isImage(file) { return file.type.indexOf('image/') === 0 || /\.(jpe?g|png|webp|gif|heic|heif|avif)$/i.test(file.name); }
+    function addSelected(input) {
+      if (uploading) return;
+      var selected = Array.prototype.slice.call(input.files || []);
+      input.value = '';
+      if (!selected.length) return;
+      // Allow fresh 30-photo batches after previously saved files.
+      files = files.filter(function(x){ return x.state !== 'done'; });
+      var errors = [];
+      for (var i=0; i<selected.length; i++) {
+        var file = selected[i];
+        if (!isImage(file)) { errors.push(file.name + ' is not an image.'); continue; }
+        if (file.size > MAX_SIZE) { errors.push(file.name + ' is over the 12 MB limit.'); continue; }
+        if (file.size <= 0) { errors.push(file.name + ' is empty.'); continue; }
+        if (files.length >= MAX_BATCH) { errors.push('You can select up to 30 photos at a time.'); break; }
+        files.push({ file:file, state:'ready', error:'' });
+      }
+      if (errors.length) showBanner(errors.slice(0,3).join(' '), 'error');
+      else clearBanner();
+      render();
+    }
+
+    function render() {
+      queue.innerHTML = '';
+      var hasFiles = files.length > 0;
+      document.getElementById('queueHeader').hidden = !hasFiles;
+      queue.hidden = !hasFiles;
+      uploadBtn.hidden = !hasFiles;
+      document.getElementById('queueTitle').textContent = hasFiles ? files.length + ' photo' + (files.length !== 1 ? 's' : '') + ' selected' : '';
+      var pending = files.filter(function(x){return x.state !== 'done';}).length;
+      uploadBtn.textContent = uploading ? 'Uploading…' : pending ? 'Upload ' + pending + ' photo' + (pending !== 1 ? 's' : '') + ' ♡' : 'All photos uploaded ✓';
+      uploadBtn.disabled = uploading || pending === 0;
+      buttons.forEach(function(id){ document.getElementById(id).disabled = uploading; });
+      files.forEach(function(item, index) {
+        var row = document.createElement('div'); row.className = 'queue-item';
+        var thumb = document.createElement('span'); thumb.className = 'thumb'; thumb.textContent = '♡';
+        var meta = document.createElement('div'); meta.className = 'file-meta';
+        var name = document.createElement('span'); name.className = 'file-name'; name.textContent = item.file.name;
+        var status = document.createElement('span'); status.className = 'file-status';
+        status.textContent = item.state === 'done' ? 'Uploaded ✓' : item.state === 'uploading' ? 'Saving to Drive…' : item.state === 'error' ? 'Failed: ' + item.error : sizeString(item.file.size);
+        if (item.state === 'done') status.classList.add('good');
+        if (item.state === 'error') status.classList.add('bad');
+        meta.appendChild(name); meta.appendChild(status); row.appendChild(thumb); row.appendChild(meta);
+        if (!uploading && item.state !== 'done') {
+          var remove = document.createElement('button'); remove.className = 'remove'; remove.type = 'button'; remove.textContent = '×'; remove.setAttribute('aria-label', 'Remove ' + item.file.name);
+          remove.addEventListener('click', function(){ files.splice(index, 1); render(); }); row.appendChild(remove);
+        }
+        queue.appendChild(row);
+      });
+    }
+
+    function asBase64(file) {
+      return new Promise(function(resolve,reject){
+        var reader = new FileReader();
+        reader.onerror = function(){ reject(new Error('Could not read the photo.')); };
+        reader.onload = function(){
+          var result = String(reader.result || '');
+          var comma = result.indexOf(',');
+          if (comma < 0) reject(new Error('Could not encode the photo.'));
+          else resolve(result.slice(comma + 1));
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    function saveToDrive(payload) {
+      return new Promise(function(resolve,reject){
+        google.script.run.withSuccessHandler(resolve).withFailureHandler(function(error){reject(error);}).uploadPhoto(payload);
+      });
+    }
+    async function uploadAll() {
+      if (uploading) return;
+      uploading = true;
+      clearBanner();
+      var progress = document.getElementById('progress');
+      var fill = document.getElementById('progressFill');
+      progress.hidden = false;
+      var pending = files.filter(function(x){return x.state !== 'done';});
+      var successCount = 0;
+      var failedCount = 0;
+      render();
+      for (var i=0; i<pending.length; i++) {
+        var item = pending[i]; item.state = 'uploading'; render();
+        try {
+          var base64 = await asBase64(item.file);
+          var result = await saveToDrive({
+            name:item.file.name,
+            mimeType:item.file.type || '',
+            base64:base64,
+            guestName:document.getElementById('guestName').value
+          });
+          if (!result || !result.success) throw new Error('No confirmation was returned.');
+          item.state = 'done'; successCount++;
+        } catch (error) {
+          item.state = 'error';
+          item.error = String(error && error.message ? error.message : 'Please retry.');
+          failedCount++;
+        }
+        fill.style.width = Math.round(((i+1)/pending.length)*100) + '%';
+        render();
+      }
+      uploading = false;
+      render();
+      if (successCount) showBanner('Thank you! ' + successCount + ' photo' + (successCount === 1 ? ' is' : 's are') + ' safely in our wedding album.' + (failedCount ? ' ' + failedCount + ' failed; tap Upload again to retry.' : ''), failedCount ? '' : 'success');
+      else showBanner('These photos could not be uploaded. Check your connection and tap Upload to retry.', 'error');
+    }
+
+    document.getElementById('cameraBtn').addEventListener('click', function(){document.getElementById('cameraInput').click();});
+    document.getElementById('galleryBtn').addEventListener('click', function(){document.getElementById('galleryInput').click();});
+    document.getElementById('cameraInput').addEventListener('change', function(){addSelected(this);});
+    document.getElementById('galleryInput').addEventListener('change', function(){addSelected(this);});
+    document.getElementById('clearBtn').addEventListener('click', function(){if (!uploading) { files = files.filter(function(x){return x.state === 'done';}); render(); clearBanner(); }});
+    uploadBtn.addEventListener('click', uploadAll);
+
+    google.script.run.withSuccessHandler(function(status){
+      if (!status.open) {
+        document.getElementById('uploadInterface').hidden = true;
+        showBanner(status.message, '');
+      }
+    }).withFailureHandler(function(){showBanner('Cannot reach the album right now. Please try again shortly.', 'error');}).getStatus();
+  })();
+</script>
+</body>
+</html>
