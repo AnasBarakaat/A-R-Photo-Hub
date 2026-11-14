@@ -2,5 +2,5 @@
 window.WEDDING_CONFIG = Object.freeze({
   title: 'Our Wedding',
   weddingDate: '12 December 2026',
-  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbzr49HCWCcwM7pzXcvyTapwgFcKu2cEWTewdVDuPnHfIittPNsYyC7HEIYlS3NTXV3iUg/exec'
+  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbzMaNXHjSQ86pFmCsnUHE0EhzuGGol-Jbig2MsfGKs-_MtJGEtgJl_TwunbdMzQg8k9qw/exec'
 });
