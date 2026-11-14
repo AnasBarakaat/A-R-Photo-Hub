@@ -43,7 +43,7 @@ body {
   opacity: .3;
 }
 .corner-ornament-top {
-  top: 8px;
+  top: -5px;
   right: 8px;
   width: 68px;
   height: 68px;
